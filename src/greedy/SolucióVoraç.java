@@ -1,6 +1,7 @@
 package greedy;
 
 import estructura.Encreuades;
+import estructura.PosicioInicial;
 
 public class SolucióVoraç {
     /* TODO
@@ -20,7 +21,7 @@ public class SolucióVoraç {
         return null; // TODO
     }
 
-    private char[][] greedy() {
+    private char[][] greedy(){
         // mireu l'esquema utilitzat per la professora Lina
         // si voleu podeu modificar la capçalera d'aquest mètode
         // si voleu podeu utilitzar recursivitat
