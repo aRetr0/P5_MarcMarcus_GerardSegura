@@ -1,6 +1,6 @@
 package estructura;
 
-public class PosicioInicial implements Comparable<PosicioInicial>{
+public class PosicioInicial implements Comparable<PosicioInicial> {
     private final int initRow;
     private final int initCol;
     private final int length;
