@@ -27,8 +27,9 @@ public class SolucioBacktracking {
         if (!optim) {
             if (!this.backUnaSolucio(0)) throw new RuntimeException("solució no trobada");
             guardarMillorSolucio();
-        } else {
+        } else if (optim) {
             this.backMillorSolucio(0);
+
         }
         return null;
     }
@@ -65,10 +66,12 @@ public class SolucioBacktracking {
             return;
         }
         for (int indexItem = 0; indexItem < this.repte.getItemsSize(); indexItem++) {
-            if (acceptable(indexUbicacio, indexItem)) {
+            if (!utilitzats[indexItem] && acceptable(indexUbicacio, indexItem)) {
                 anotarASolucio(indexUbicacio, indexItem);
+                utilitzats[indexItem] = true; // Marcar el ítem como usado
                 backMillorSolucio(indexUbicacio + 1);
                 desanotarDeSolucio(indexUbicacio, indexItem);
+                utilitzats[indexItem] = false; // Desmarcar el ítem
             }
         }
     }
@@ -164,20 +167,9 @@ public class SolucioBacktracking {
     }
 
     private void guardarMillorSolucio() {
-        if (millorSolucio == null) {
-            millorSolucio = new char[solucioActual.length][];
-            for (int i = 0; i < solucioActual.length; i++) {
-                millorSolucio[i] = solucioActual[i].clone();
-            }
-        } else {
-            int puntsMillor = calcularFuncioObjectiu(millorSolucio);
-            int puntsActual = calcularFuncioObjectiu(solucioActual);
-
-            if (puntsActual > puntsMillor) {
-                for (int i = 0; i < solucioActual.length; i++) {
-                    millorSolucio[i] = solucioActual[i].clone();
-                }
-            }
+        millorSolucio = new char[solucioActual.length][];
+        for (int i = 0; i < solucioActual.length; i++) {
+            millorSolucio[i] = solucioActual[i].clone();
         }
     }
 
