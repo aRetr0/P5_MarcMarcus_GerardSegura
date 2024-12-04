@@ -9,12 +9,14 @@ public class SolucioBacktracking {
     private char[][] solucioActual;
     private char[][] millorSolucio;
     private int millorValor;
+    private boolean[] utilitzats;
 
     public SolucioBacktracking(Encreuades repte) {
         this.repte = repte;
         this.solucioActual = repte.getPuzzle();
         this.millorSolucio = null;
         this.millorValor = 0;
+        this.utilitzats = new boolean[repte.getItemsSize()];
     }
 
     public char[][] getMillorSolucio() {
@@ -33,19 +35,25 @@ public class SolucioBacktracking {
 
     private boolean backUnaSolucio(int indexUbicacio) {
         if (indexUbicacio >= repte.getEspaisDisponibles().size()) {
+            for (boolean b : utilitzats) {
+                if (!b) return false; // Ensure all items are used
+            }
             return true;
         }
         for (int indexItem = 0; indexItem < this.repte.getItemsSize(); indexItem++) {
-            if (acceptable(indexUbicacio, indexItem)) {
+            if (!utilitzats[indexItem] && acceptable(indexUbicacio, indexItem)) {
                 anotarASolucio(indexUbicacio, indexItem);
+                utilitzats[indexItem] = true; // Mark item as used
                 if (backUnaSolucio(indexUbicacio + 1)) {
                     return true;
                 }
                 desanotarDeSolucio(indexUbicacio, indexItem);
+                utilitzats[indexItem] = false; // Unmark item
             }
         }
         return false;
     }
+
 
     private void backMillorSolucio(int indexUbicacio) {
         if (indexUbicacio >= repte.getEspaisDisponibles().size()) {
@@ -99,6 +107,8 @@ public class SolucioBacktracking {
                 solucioActual[row + i][col] = item[i];
             }
         }
+
+        utilitzats[indexItem] = true;
     }
 
     private void desanotarDeSolucio(int indexUbicacio, int indexItem) {
@@ -110,19 +120,35 @@ public class SolucioBacktracking {
 
         for (int i = 0; i < item.length; i++) {
             if (direccio == 'H') {
-                if (esborrable(row, col + i, item[i])) solucioActual[row][col + i] = ' ';
+                if (esborrable(row, col + i, item[i], direccio)) solucioActual[row][col + i] = ' ';
             } else {
-                if (esborrable(row + i, col, item[i])) solucioActual[row + i][col] = ' ';
+                if (esborrable(row + i, col, item[i], direccio)) solucioActual[row + i][col] = ' ';
             }
         }
+
+        utilitzats[indexItem] = false;
     }
 
-    private boolean esborrable(int row, int col, char c) {
-        return solucioActual[row][col] == c;
+    private boolean esborrable(int row, int col, char c, char direccio) {
+        boolean creuat = false;
+
+        if (solucioActual[row][col] != c) {
+            return false;
+        }
+
+        if (direccio == 'H') {
+            if (row + 1 < solucioActual.length && (solucioActual[row + 1][col] != ' ' && solucioActual[row + 1][col] != '▪')) creuat = true;
+            if (row - 1 >= 0 && (solucioActual[row - 1][col] != ' ' && solucioActual[row - 1][col] != '▪')) creuat = true;
+        } else {
+            if (col + 1 < solucioActual[0].length && (solucioActual[row][col + 1] != ' ' && solucioActual[row][col + 1] != '▪')) creuat = true;
+            if (col - 1 >= 0 && (solucioActual[row][col - 1] != ' ' && solucioActual[row][col - 1] != '▪')) creuat = true;
+        }
+
+        return !creuat;
     }
 
-    private boolean esSolucio(int index) {
-        return index == repte.getEspaisDisponibles().size();
+    private boolean esSolucio() {
+        return repte.getEspaisDisponibles().isEmpty();
     }
 
     private int calcularFuncioObjectiu(char[][] matriu) {
@@ -138,9 +164,20 @@ public class SolucioBacktracking {
     }
 
     private void guardarMillorSolucio() {
-        millorSolucio = new char[solucioActual.length][];
-        for (int i = 0; i < solucioActual.length; i++) {
-            millorSolucio[i] = solucioActual[i].clone();
+        if (millorSolucio == null) {
+            millorSolucio = new char[solucioActual.length][];
+            for (int i = 0; i < solucioActual.length; i++) {
+                millorSolucio[i] = solucioActual[i].clone();
+            }
+        } else {
+            int puntsMillor = calcularFuncioObjectiu(millorSolucio);
+            int puntsActual = calcularFuncioObjectiu(solucioActual);
+
+            if (puntsActual > puntsMillor) {
+                for (int i = 0; i < solucioActual.length; i++) {
+                    millorSolucio[i] = solucioActual[i].clone();
+                }
+            }
         }
     }
 

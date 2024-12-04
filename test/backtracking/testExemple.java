@@ -1,5 +1,6 @@
 package backtracking;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import estructura.Encreuades;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ class testExemple {
 				{'4', '3', '8', '7', '9'},
 				{'8', '2', '4', '9'},
 				{'2', '8', '7'}
+
 		};
 		Encreuades exemple = new Encreuades(puzzle,valors);
 
@@ -48,6 +50,7 @@ class testExemple {
 		{	'2',	'8',	'8',	'8',	'6',	'7',	'4',	'8',	'6',	'6'},
 		{	'8',	'▪',	'▪',	'7',	'▪',	'9',	'▪',	'4',	'▪',	'4'},
 		{	'8',	'2',	'4',	'9',	'▪',	'2',	'5',	'7',	'5',	'2'} };
+
 
 		assertArrayEquals(solucio, trobat);
 	}
