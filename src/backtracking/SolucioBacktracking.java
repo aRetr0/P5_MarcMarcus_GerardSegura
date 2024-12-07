@@ -57,23 +57,58 @@ public class SolucioBacktracking {
 
 
     private void backMillorSolucio(int indexUbicacio) {
+        System.out.println("Entering backMillorSolucio with indexUbicacio: " + indexUbicacio);
         if (indexUbicacio >= repte.getEspaisDisponibles().size()) {
             int valorActual = calcularFuncioObjectiu(solucioActual);
             if (valorActual > millorValor) {
                 millorValor = valorActual;
                 guardarMillorSolucio();
             }
+            System.out.println("Exiting backMillorSolucio with indexUbicacio: " + indexUbicacio + " (base case)");
             return;
         }
+
+        PosicioInicial pos = repte.getEspaisDisponibles().get(indexUbicacio);
+        int row = pos.getInitRow();
+        int col = pos.getInitCol();
+        int length = pos.getLength();
+        char direccio = pos.getDireccio();
+
+        // Skip cells that are '▪'
+        boolean skip = false;
+        if (direccio == 'H') {
+            for (int i = 0; i < length; i++) {
+                System.out.println("Checking cell: (" + row + ", " + (col + i) + ") with value: " + solucioActual[row][col + i]);
+                if (solucioActual[row][col + i] == '▪') {
+                    skip = true;
+                    break;
+                }
+            }
+        } else {
+            for (int i = 0; i < length; i++) {
+                System.out.println("Checking cell: (" + (row + i) + ", " + col + ") with value: " + solucioActual[row + i][col]);
+                if (solucioActual[row + i][col] == '▪') {
+                    skip = true;
+                    break;
+                }
+            }
+        }
+        if (skip) {
+            System.out.println("Skipping indexUbicacio: " + indexUbicacio + " due to '▪' cell");
+            backMillorSolucio(indexUbicacio + 1);
+            return;
+        }
+
         for (int indexItem = 0; indexItem < this.repte.getItemsSize(); indexItem++) {
             if (!utilitzats[indexItem] && acceptable(indexUbicacio, indexItem)) {
                 anotarASolucio(indexUbicacio, indexItem);
-                utilitzats[indexItem] = true; // Marcar el ítem como usado
+                utilitzats[indexItem] = true; // Mark the item as used
                 backMillorSolucio(indexUbicacio + 1);
                 desanotarDeSolucio(indexUbicacio, indexItem);
-                utilitzats[indexItem] = false; // Desmarcar el ítem
+                utilitzats[indexItem] = false; // Unmark the item
             }
         }
+        System.out.println("Exiting backMillorSolucio with indexUbicacio: " + indexUbicacio);
     }
 
     private boolean acceptable(int indexUbicacio, int indexItem) {
@@ -159,7 +194,11 @@ public class SolucioBacktracking {
         for (char[] fila : matriu) {
             for (char c : fila) {
                 if (c != ' ' && c != '▪') {
-                    valor += c;
+                    if (Character.isDigit(c)) {
+                        valor += c - '0'; // Numeric value
+                    } else if (Character.isLetter(c)) {
+                        valor += Character.toUpperCase(c) - 'A' + 10; // Offset letters to avoid overlap
+                    }
                 }
             }
         }
