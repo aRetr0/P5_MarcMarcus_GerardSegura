@@ -10,8 +10,7 @@ backtrack) si una combinació no és viable.
 
 ---
 
-### **2. Quina pregunta et fas en cada nivell de l’arbre? Quines són les possibles respostes d’aquesta pregunta (
-domini)?**
+### **2. Quina pregunta et fas en cada nivell de l’arbre? Quines són les possibles respostes d’aquesta pregunta (domini)?**
 
 - **Pregunta**: Quina paraula es pot col·locar en la ubicació actual?
 - **Respostes**:
@@ -49,8 +48,7 @@ Un conjunt de decisions és solució si:
 
 ---
 
-### **6. Dibuixeu l’espai de cerca del problema, indica quina és l’alçada i l’amplada i si són valors exactes o màxims.
-Usaràs marcatge?**
+### **6. Dibuixeu l’espai de cerca del problema, indica quina és l’alçada i l’amplada i si són valors exactes o màxims. Usaràs marcatge?**
 
 - **Espai de cerca**: És un arbre on cada node representa una paraula col·locada a la reixa.
 - **Alçada**: És igual al nombre total de paraules a col·locar. Aquest valor és exacte.

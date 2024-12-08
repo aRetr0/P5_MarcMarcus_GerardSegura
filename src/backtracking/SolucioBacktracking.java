@@ -27,13 +27,13 @@ public class SolucioBacktracking {
         if (!optim) {
             if (!this.backUnaSolucio(0)) throw new RuntimeException("solució no trobada");
             guardarMillorSolucio();
-        } else if (optim) {
+        } else {
             this.backMillorSolucio(0);
-
         }
         return null;
     }
 
+    // Metode per a trobar una solucio
     private boolean backUnaSolucio(int indexUbicacio) {
         if (indexUbicacio >= repte.getEspaisDisponibles().size()) {
             for (boolean b : utilitzats) {
@@ -55,47 +55,14 @@ public class SolucioBacktracking {
         return false;
     }
 
-
+    // Metode per a trobar la millor solucio
     private void backMillorSolucio(int indexUbicacio) {
-        System.out.println("Entering backMillorSolucio with indexUbicacio: " + indexUbicacio);
         if (indexUbicacio >= repte.getEspaisDisponibles().size()) {
             int valorActual = calcularFuncioObjectiu(solucioActual);
             if (valorActual > millorValor) {
                 millorValor = valorActual;
                 guardarMillorSolucio();
             }
-            System.out.println("Exiting backMillorSolucio with indexUbicacio: " + indexUbicacio + " (base case)");
-            return;
-        }
-
-        PosicioInicial pos = repte.getEspaisDisponibles().get(indexUbicacio);
-        int row = pos.getInitRow();
-        int col = pos.getInitCol();
-        int length = pos.getLength();
-        char direccio = pos.getDireccio();
-
-        // Skip cells that are '▪'
-        boolean skip = false;
-        if (direccio == 'H') {
-            for (int i = 0; i < length; i++) {
-                System.out.println("Checking cell: (" + row + ", " + (col + i) + ") with value: " + solucioActual[row][col + i]);
-                if (solucioActual[row][col + i] == '▪') {
-                    skip = true;
-                    break;
-                }
-            }
-        } else {
-            for (int i = 0; i < length; i++) {
-                System.out.println("Checking cell: (" + (row + i) + ", " + col + ") with value: " + solucioActual[row + i][col]);
-                if (solucioActual[row + i][col] == '▪') {
-                    skip = true;
-                    break;
-                }
-            }
-        }
-        if (skip) {
-            System.out.println("Skipping indexUbicacio: " + indexUbicacio + " due to '▪' cell");
-            backMillorSolucio(indexUbicacio + 1);
             return;
         }
 
@@ -108,9 +75,9 @@ public class SolucioBacktracking {
                 utilitzats[indexItem] = false; // Unmark the item
             }
         }
-        System.out.println("Exiting backMillorSolucio with indexUbicacio: " + indexUbicacio);
     }
 
+    // Metode per verificar si una posicio es acceptable
     private boolean acceptable(int indexUbicacio, int indexItem) {
         PosicioInicial pos = repte.getEspaisDisponibles().get(indexUbicacio);
         char[] item = repte.getItem(indexItem);
@@ -119,7 +86,7 @@ public class SolucioBacktracking {
         int length = pos.getLength();
         char direccio = pos.getDireccio();
 
-        if (item.length > length) return false;
+        if (item.length != length) return false;
 
         for (int i = 0; i < item.length; i++) {
             if (direccio == 'H') {
@@ -131,6 +98,7 @@ public class SolucioBacktracking {
         return true;
     }
 
+    // Metode per anotar una solucio
     private void anotarASolucio(int indexUbicacio, int indexItem) {
         PosicioInicial pos = repte.getEspaisDisponibles().get(indexUbicacio);
         char[] item = repte.getItem(indexItem);
@@ -149,6 +117,7 @@ public class SolucioBacktracking {
         utilitzats[indexItem] = true;
     }
 
+    // Metode per a desanotar una solucio
     private void desanotarDeSolucio(int indexUbicacio, int indexItem) {
         PosicioInicial pos = repte.getEspaisDisponibles().get(indexUbicacio);
         char[] item = repte.getItem(indexItem);
@@ -167,6 +136,7 @@ public class SolucioBacktracking {
         utilitzats[indexItem] = false;
     }
 
+    // Metode per a verificar si la cel·la es esborrable
     private boolean esborrable(int row, int col, char c, char direccio) {
         boolean creuat = false;
 
@@ -185,10 +155,7 @@ public class SolucioBacktracking {
         return !creuat;
     }
 
-    private boolean esSolucio() {
-        return repte.getEspaisDisponibles().isEmpty();
-    }
-
+    // Metode per a calcular la funcio objectiu
     private int calcularFuncioObjectiu(char[][] matriu) {
         int valor = 0;
         for (char[] fila : matriu) {
@@ -205,6 +172,7 @@ public class SolucioBacktracking {
         return valor;
     }
 
+    // Metode per a guardar la millor solucio
     private void guardarMillorSolucio() {
         millorSolucio = new char[solucioActual.length][];
         for (int i = 0; i < solucioActual.length; i++) {
@@ -212,6 +180,7 @@ public class SolucioBacktracking {
         }
     }
 
+    @Override
     public String toString() {
         StringBuilder resultat = new StringBuilder();
         for (char[] fila : solucioActual) {
